@@ -1,0 +1,58 @@
+---
+title: "utdt_consigna2"
+author: "icalb"
+date: '2022-08-24'
+output: html_document
+---
+
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(sf)
+```
+
+```{r}
+base_properati_2020.2021 <-read.csv("data/amba_properati_2020-2021.csv", stringsAsFactors = TRUE)
+```
+
+```{r}
+properati_venta <- base_properati_2020.2021 %>% 
+  filter(str_detect(string = operation_type , 
+                    pattern = "Venta"))
+```
+```{r}
+properati_venta_usd <- properati_venta %>% 
+  filter(str_detect(string = currency ,
+                      pattern = "USD"))
+
+```
+
+```{r}
+install.packages("datos")
+library(datos)
+```
+```{r}
+Agrupados_properati_venta_usd <- properati_venta_usd %>%
+  group_by(partido) %>%
+  summarise(ofertausd = sum(price))
+```
+
+```{r}
+Agrupados_properati_venta_usd_1 <- Agrupados_properati_venta_usd
+  filter(str_detect(string = partido ,
+                      pattern = "Capital Federal"))
+
+
+```
+
+
+```{r}
+ggplot(data=Agrupados_properati_venta_usd, aes( x=ofertausd, y=partido)) + 
+    geom_bar(stat="identity", position="dodge") 
+```
+
+
+
+
